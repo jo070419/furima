@@ -3,9 +3,14 @@
 ## users テーブル
 | Column             | Type   | Options                   |
 | ------------------ | ------ | ------------------------- |
+| nickname           | string | null: false               |
 | email              | string | null: false, unique: true |
 | encrypted_password | string | null: false               |
-| name               | string | null: false               |
+| last_name          | string | null: false               |
+| first_name         | string | null: false               |
+| last_name_kana     | string | null: false               |
+| first_name_kana    | string | null: false               |
+| birth_date         | date   | null: false               |
 
 ### Association
 - has_many :items
@@ -22,7 +27,7 @@
 | shipping_fee       | string       | null: false                                 |
 | shipping_from      | string       | null: false                                 |
 | shipping_day       | string       | null: false                                 |
-| price              | string       | null: false                                 |
+| price              | integer      | null: false                                 |
 | user               | references   | null: false, null: false, foreign_key: true |
 
 ### Association

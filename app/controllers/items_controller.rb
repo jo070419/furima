@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-
+  before_action :set_item, only: [:show, :edit, :destroy, :purchase]
   def index
     @items = Item.includes(:user).order("created_at DESC")
   end
@@ -18,11 +18,13 @@ class ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find(params[:id])
   end
 
   def edit
-    @item = Item.find(params[:id])
+    item = Item.find(params[:id])
+    if item.purchase_log.present?
+      redirect_to root_path
+    end
   end
 
   def update
@@ -35,17 +37,20 @@ class ItemsController < ApplicationController
   end
   
   def destroy
-    @item = Item.find(params[:id])
     @item.destroy
     redirect_to root_path
   end
 
-  def order
+  def purchase
   end
 
   private
 
   def item_params
     params.require(:item).permit(:name, :description, :category_id, :condition_id, :shipping_fee_id, :shipping_from_id, :shipping_day_id, :price, :image).merge(user_id: current_user.id)
+  end
+
+  def set_item
+    @item = Item.find(params[:id])
   end
 end

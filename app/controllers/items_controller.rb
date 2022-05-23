@@ -1,17 +1,19 @@
 class ItemsController < ApplicationController
-  before_action :set_item, only: [:show, :edit, :destroy, :purchase]
+  before_action :set_item, only: [:show, :edit, :destroy, :purchase, :update]
   before_action :authenticate_user!, except: [:index, :show]
   def index
     @items = Item.includes(:user).order("created_at DESC")
   end
 
   def new
-    @item = Item.new
+    @item_form = ItemForm.new
   end
 
   def create
-    @item = Item.new(item_params)
-    if @item.save
+    binding.pry
+    @item_form = ItemForm.new(item_params)
+    if @item_form.valid?
+      @item_form.save
       redirect_to root_path
     else
       render :new
@@ -22,15 +24,22 @@ class ItemsController < ApplicationController
   end
 
   def edit
-    item = Item.find(params[:id])
-    if item.purchase_log.present?
+    item_attributes = @item.attributes
+    @item_form = ItemForm.new(item_attributes)
+    @item_form.tag_name = @item.tags&.first&.tag_name
+    if @item.purchase_log.present?
       redirect_to root_path
     end
   end
 
   def update
-    item = Item.find(params[:id])
-    if item.update(item_params)
+    @item_form = ItemForm.new(item_params)
+
+    # 画像を選択し直していない場合は、既存の画像をセットする
+    @item_form.images ||= @item.images.blobs
+
+    if @item_form.valid?
+      @item_form.update(item_params, @item)
       redirect_to action: :show
     else
       render :edit
@@ -48,7 +57,7 @@ class ItemsController < ApplicationController
   private
 
   def item_params
-    params.require(:item).permit(:name, :description, :category_id, :condition_id, :shipping_fee_id, :shipping_from_id, :shipping_day_id, :price, {images: []}).merge(user_id: current_user.id)
+    params.require(:item_form).permit(:name, :description, :category_id, :condition_id, :shipping_fee_id, :shipping_from_id, :shipping_day_id, :price, :tag_name, {images: []}).merge(user_id: current_user.id)
   end
 
   def set_item

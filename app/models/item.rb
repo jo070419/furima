@@ -8,6 +8,8 @@ class Item < ApplicationRecord
   belongs_to        :shipping_day
   belongs_to        :shipping_fee
   belongs_to        :shipping_from
+  has_many          :item_tag_relations
+  has_many          :tags, through: :item_tag_relations
 
   validates :name,              presence:     true
   validates :description,       presence:     true

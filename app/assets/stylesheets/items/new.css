@@ -130,6 +130,18 @@ img.preview-image{
   margin: 2vh 0;
 }
 
+#search-result{
+  width: 30%;
+}
+
+.child{
+  margin: 5px;
+  border: 1px solid #dedede;
+  background-color: #F4F4F4;
+  padding: 5px;
+  font-size: 12px;
+}
+
 /* /商品の詳細など */
 
 /* 販売価格 */

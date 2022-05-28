@@ -10,7 +10,6 @@ class ItemsController < ApplicationController
   end
 
   def create
-    binding.pry
     @item_form = ItemForm.new(item_params)
     if @item_form.valid?
       @item_form.save
@@ -51,7 +50,10 @@ class ItemsController < ApplicationController
     redirect_to root_path
   end
 
-  def purchase
+  def search
+    return nil if params[:keyword] == ""
+    tag = Tag.where(['tag_name LIKE ?', "%#{params[:keyword]}%"])
+    render json:{ keyword: tag }
   end
 
   private
